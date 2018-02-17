@@ -20,4 +20,8 @@ const showGithubUserAsync = async handle => {
   return await response.json();
 }
 
-showGithubUserAsync('larrybotha').then(logUser);
+// await can't be used at the top-level of a file - it's a syntax error, as
+// it can only reside inside a function
+// To get around this, we can use the IIFE pattern
+(async () => {
+})();
