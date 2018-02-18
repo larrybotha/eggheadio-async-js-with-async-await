@@ -24,3 +24,8 @@ const fetchGithubUser = async handle => {
 };
 
 fetchGithubUser('larrybotha').then(logUser);
+fetchGithubUser('notreallyauser')
+  .then(res => console.log(res))
+  // we can use catch in a Promise chain because async functions automatically
+  // return a rejected promise when an error is thrown
+  .catch(err => console.error(`Error: ${err.message}`));
