@@ -1,28 +1,29 @@
-const Bluebird = require('bluebird');
+// polyfillish
+Symbol.asyncIterator = Symbol.asyncIterator || Symbol('asyncIterator');
 
 const log = (...args) => console.log(args);
 
+// a function which generates delays
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// an async generator
+async function* someGen() {
+  // it's async because we're blocking until each delay is resolved
+  await delay(1000);
+  yield 1;
+  await delay(1000);
+  yield 2;
+  await delay(1000);
+  yield 3;
+}
+
 async function main() {
-  // if we pass a value directly to await, then await returns an immediately
-  // resolved Promise
-  const x = await 42;
-  // the above is the equivalent of the following line
-  const y = await Promise.resolve(42);
-
-  log(x);
-  log(y);
+  // a for await of loop
+  // It's async because of the await keyword
+  // It will only iterate after the async function resolves
+  for await (const value of someGen()) {
+    log(value);
+  }
 }
 
-async function main2() {
-  log('Working...');
-  // Bluebird.delay returns an object that is a thenable
-  // There is an implicit Promise.resolve wrapped around values preceded
-  // by the await keyword.
-  // If the argument passed to Promise.resolve has a .then method the final
-  // Promise will follow that thenable to its final state
-  await Bluebird.delay(2000);
-  log('done');
-}
-
-// main();
-main2();
+main();

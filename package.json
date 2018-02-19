@@ -1,23 +1,30 @@
 {
   "name": "eggheadio-async-js-with-async-await",
   "version": "1.0.0",
-  "description": "Annotations and learning from https://egghead.io/courses/asynchronous-javascript-with-async-await",
+  "description":
+    "Annotations and learning from https://egghead.io/courses/asynchronous-javascript-with-async-await",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p ./"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/larrybotha/eggheadio-async-js-with-async-await.git"
+    "url":
+      "git+https://github.com/larrybotha/eggheadio-async-js-with-async-await.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/larrybotha/eggheadio-async-js-with-async-await/issues"
+    "url":
+      "https://github.com/larrybotha/eggheadio-async-js-with-async-await/issues"
   },
-  "homepage": "https://github.com/larrybotha/eggheadio-async-js-with-async-await#readme",
+  "homepage":
+    "https://github.com/larrybotha/eggheadio-async-js-with-async-await#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
     "isomorphic-fetch": "^2.2.1"
+  },
+  "devDependencies": {
+    "typescript": "^2.7.2"
   }
 }
