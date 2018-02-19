@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/larrybotha/eggheadio-async-js-with-async-await#readme",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "isomorphic-fetch": "^2.2.1"
   }
 }
