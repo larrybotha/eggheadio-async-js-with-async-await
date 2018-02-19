@@ -2,50 +2,41 @@ const fetch = require('isomorphic-fetch');
 
 const getUrl = handle => `https://api.github.com/users/${handle}`;
 
-const logUser = ({name, location}) => {
-  console.log(name);
-  console.log(location);
-};
+const log = (...args) => console.log(args);
 
-const fetchGithubUser = async handle => {
+const fetchfromGithub = async handle => {
   const url = getUrl(handle);
   const response = await fetch(url);
-  const body = await response.json();
-
-  if (response.status !== 200) {
-    // an async function will automatically return a rejected promise
-    // whenever an error is thrown
-    // This allows us to chain a catch onto the call-site of the async
-    // function
-    throw Error(body.message);
-  }
-
-  return body;
+  return await response.json();
 };
 
-// what's being done here is not possible with Promises
-const showGithubUser = async handle => {
-  // in a Promise chain the callbacks are called asynchronously, so we
-  // can't use try-catch blocks
-  // With async functions we get that power back
-  try {
-    // asynchronously get the user
-    const user = await fetchGithubUser(handle);
-    // if we get a success response, then log the user
-    logUser(user);
-    // but if an error is thrown from the async function we called above,
-    // then handle it
-  } catch (err) {
-    console.log(`Error: ${err.message}`);
-  }
-};
+async function showUserAndRepos(handle) {
+  // the problem here is that the requests are made sequentially, and not in
+  // parallel
+  // The second request waits for the first request to succeed before executing
+  // If each request takes .5s, the two requests will take 1s
+  // Analogy: boiling eggs. Boiling eggs in sequence, vs in parallel
+  // const user = await fetchfromGithub(handle);
+  // const repos = await fetchfromGithub(`${handle}/repos`);
 
-fetchGithubUser('notreallyauser')
-  .then(res => console.log(res))
-  // we can use catch in a Promise chain because async functions automatically
-  // return a rejected promise when an error is thrown
-  .catch(err => console.error(`Error: ${err.message}`));
+  // To get around this, we can execute the calls immediately, and assign the
+  // returned promises to variables. This way, the requests are fired off in
+  // parallel, and we can then wait for the responses.
+  const userPromise = fetchfromGithub(handle);
+  const reposPromise = fetchfromGithub(`${handle}/repos`);
 
-// use our async function which has the added benefit of a try-catch block
-showGithubUser('notreallyauser');
-showGithubUser('larrybotha');
+  // after assigning and executing our async requests, we can now assign the
+  // responses to variables using await.
+  // Because both Promises are already pending by this stage, they can be
+  // resolved concurrently, and we're not waiting for one to finish before the
+  // next begins
+  const user = await userPromise;
+  const repos = await reposPromise;
+
+  // we are blocking execution above using await - only once both have resolved
+  // will we get here
+  log(user.name);
+  log(repos.length);
+}
+
+showUserAndRepos('larrybotha');
